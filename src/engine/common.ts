@@ -14,7 +14,7 @@ export class Direction {
     }
 
     toString(): string {
-        return "(" + this.above ? "above" : "below" + ", " + this.right ? "right" : "left" + ")";
+        return `(${this.above ? "above" : "below"}, ${this.right ? "right" : "left"})`;
     }
 }
 

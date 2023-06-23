@@ -22,7 +22,7 @@ export class Desktop {
     activity: string;
     desktop: number;
     toString(): string {
-        return "(" + this.screen + ", " + this.activity + ", " + this.desktop + ")";
+        return `(${this.screen}, ${this.activity}, ${this.desktop})`;
     }
 
     constructor(screen?: number, activity?: string, desktop?: number) {
@@ -63,7 +63,7 @@ export class EngineManager {
         this.engineTypes.set(desktop.toString(), config.defaultEngine);
         const engine = engineForEnum(config.defaultEngine);
         if (engine === undefined) {
-            printDebug("Could not create default engine for desktop " + desktop, true);
+            printDebug(`Could not create default engine for desktop ${desktop}`, true);
             return undefined;
         }
         this.engines.set(desktop.toString(), engine);
@@ -73,16 +73,16 @@ export class EngineManager {
     cycleEngine(desktop: Desktop): boolean {
         let engineType = this.engineTypes.get(desktop.toString());
         if (engineType === undefined) {
-            printDebug("No engine found for desktop " + desktop, true);
+            printDebug(`No engine found for desktop ${desktop}`, true);
             return false;
         }
         engineType += 1;
         engineType %= EngineTypes._loop;
-        printDebug("Setting engine for " + desktop + " to engine " + EngineTypes[engineType], false);
+        printDebug(`Setting engine for ${desktop} to engine ${EngineTypes[engineType]}`, false);
         this.engineTypes.set(desktop.toString(), engineType);
         const engine = engineForEnum(engineType);
         if (engine == null) {
-            printDebug("Failed to cycle engine for desktop " + desktop, true);
+            printDebug(`Failed to cycle engine for desktop ${desktop}`, true);
             return false;
         }
         this.engines.set(desktop.toString(), engine);
@@ -93,7 +93,7 @@ export class EngineManager {
     buildLayout(rootTile: KWin.RootTile, desktop: Desktop): boolean {
         // disconnect layout modified signal temporarily to stop them from interfering
         this.layoutBuilding = true;
-        printDebug("Building layout for desktop " + desktop, false);
+        printDebug(`Building layout for desktop ${desktop}`, false);
         const engine = this.engines.get(desktop.toString()) ?? this.createNewEngine(desktop);
         // wipe rootTile clean
         while (rootTile.tiles.length > 0) {
@@ -128,7 +128,7 @@ export class EngineManager {
         if (this.layoutBuilding) return true;
         // should work as you can only modify tiles on the current desktop
         const desktop = new Desktop();
-        printDebug("Updating tiles for desktop " + desktop, false);
+        printDebug(`Updating tiles for desktop ${desktop}`, false);
         const engine = this.engines.get(desktop.toString()) ?? this.createNewEngine(desktop);
         if (engine === undefined) return false;
         return engine.updateTiles(rootTile);
@@ -138,7 +138,7 @@ export class EngineManager {
         // set layoutBuilding to prevent updateTiles from being called
         this.layoutBuilding = true;
         const desktop = new Desktop();
-        printDebug("Resizing tile in direction " + direction + " by " + amount + " of screen space on desktop " + desktop, false);
+        printDebug(`Resizing tile in direction ${direction} by ${amount} of screen space on desktop ${desktop}`, false);
         const engine = this.engines.get(desktop.toString()) ?? this.createNewEngine(desktop);
         if (engine === undefined) return false;
         const ret = engine.resizeTile(tile, direction, amount);
@@ -147,7 +147,7 @@ export class EngineManager {
     }
 
     placeClients(desktop: Desktop): Array<[KWin.AbstractClient, KWin.Tile | null]> {
-        printDebug("Placing clients for desktop " + desktop, false);
+        printDebug(`Placing clients for desktop ${desktop}`, false);
         const engine = this.engines.get(desktop.toString()) ?? this.createNewEngine(desktop);
         if (engine === undefined) return [];
         return engine.placeClients();
@@ -173,7 +173,7 @@ export class EngineManager {
             desktops.push(optionalDesktop);
         }
         for (const desktop of desktops) {
-            printDebug("Adding " + client.resourceClass + " to desktop " + desktop, false);
+            printDebug(`Adding ${client.resourceClass} to desktop ${desktop}`, false);
             const engine = this.engines.get(desktop.toString()) ?? this.createNewEngine(desktop);
             if (engine === undefined || !engine.addClient(client)) return false;
         }
@@ -217,7 +217,7 @@ export class EngineManager {
 
     putClientInTile(client: KWin.AbstractClient, tile: KWin.Tile, direction?: Direction): boolean {
         const desktop = new Desktop();
-        printDebug("Placing " + client.resourceClass + " in " + tile, false);
+        printDebug(`Placing ${client.resourceClass} in ${tile}`, false);
         const engine = this.engines.get(desktop.toString()) ?? this.createNewEngine(desktop);
         if (engine === undefined) return false;
         return engine.putClientInTile(client, tile, direction);
@@ -225,7 +225,7 @@ export class EngineManager {
 
     clientOfTile(tile: KWin.Tile): KWin.AbstractClient | null {
         const desktop = new Desktop();
-        printDebug("Getting client of " + tile, false);
+        printDebug(`Getting client of ${tile}`, false);
         const engine = this.engines.get(desktop.toString()) ?? this.createNewEngine(desktop);
         if (engine === undefined) return null;
         return engine.clientOfTile(tile);
@@ -233,7 +233,7 @@ export class EngineManager {
 
     swapTiles(tileA: KWin.Tile, tileB: KWin.Tile): boolean {
         const desktop = new Desktop();
-        printDebug("Swapping clients of " + tileA + " and " + tileB, false);
+        printDebug(`Swapping clients of ${tileA} and ${tileB}`, false);
         const engine = this.engines.get(desktop.toString()) ?? this.createNewEngine(desktop);
         if (engine === undefined) return false;
         return engine.swapTiles(tileA, tileB);
@@ -259,7 +259,7 @@ export class EngineManager {
             desktops.push(optionalDesktop);
         }
         for (const desktop of desktops) {
-            printDebug("Removing " + client.resourceClass + " from desktop " + desktop, false);
+            printDebug(`Removing ${client.resourceClass} from desktop ${desktop}`, false);
             const engine = this.engines.get(desktop.toString()) ?? this.createNewEngine(desktop);
             if (engine === undefined || !engine.removeClient(client)) return false;
         }

@@ -23,7 +23,7 @@ export function rebuildLayout(this: any, isRepeat = false): void {
     for (const desktop of desktops) {
         const tileManager = workspace.tilingForScreen(desktop.screen);
         if (tileManager === undefined) {
-            printDebug("No root tile found for desktop " + desktop, true);
+            printDebug(`No root tile found for desktop ${desktop}`, true);
             return;
         }
         engine.buildLayout(tileManager.rootTile, desktop);
@@ -121,7 +121,7 @@ export function clientDesktopChange(this: any, client: KWin.AbstractClient): voi
     client.oldScreen = client.screen;
     client.oldActivities = [];
     for (const activity of client.activities) client.oldActivities.push(activity);
-    printDebug("Desktop, screen, or activity changed on " + client.resourceClass, false);
+    printDebug(`Desktop, screen, or activity changed on ${client.resourceClass}`, false);
     const oldDesktops = new Array<Desktop>();
     if (vdesktop === -1) {
         for (let i = 0; i < workspace.desktops; i += 1) {
@@ -198,10 +198,10 @@ export function clientGeometryChange(this: any, client: KWin.AbstractClient, _ol
     if (client.screen !== desktop.screen || !client.activities.includes(desktop.activity) || !(client.desktop === desktop.desktop || client.desktop === -1)) return;
     // if removed from tile
     if (client.wasTiled && client.tile == null) {
-        printDebug(client.resourceClass + " was moved out of a tile", false);
+        printDebug(`${client.resourceClass} was moved out of a tile`, false);
         untileClient(client);
     } else if (!client.wasTiled && client.tile != null) { // if added to tile
-        printDebug(client.resourceClass + " was moved into a tile", false);
+        printDebug(`${client.resourceClass} was moved into a tile`, false);
         tileClient(client, client.tile, GeometryTools.directionFromPointInRect(client.tile.absoluteGeometry, workspace.cursorPos));
     }
 }
@@ -237,40 +237,40 @@ export function addClient(client: KWin.AbstractClient): void {
     }
 
     if (doTileClient(client)) {
-        printDebug("Adding and tiling " + client.resourceClass, false);
+        printDebug(`Adding and tiling ${client.resourceClass}`, false);
         tileClient(client);
     } else {
-        printDebug("Adding and not tiling " + client.resourceClass, false);
+        printDebug(`Adding and not tiling ${client.resourceClass}`, false);
     }
 }
 
 export function removeClient(client: KWin.AbstractClient): void {
-    printDebug(client.resourceClass + " was removed and untiled", false);
+    printDebug(`${client.resourceClass} was removed and untiled`, false);
     untileClient(client);
 }
 
 export function clientFullScreenSet(client: KWin.AbstractClient, fullScreen: boolean, _user: boolean): void {
     if (!client.wasTiled) return;
     if (fullScreen) {
-        printDebug(client.resourceClass + " enabled fullscreen", false);
+        printDebug(`${client.resourceClass} enabled fullscreen`, false);
         untileClient(client);
         client.wasTiled = true;
     } else {
-        printDebug(client.resourceClass + " disabled fullscreen", false);
+        printDebug(`${client.resourceClass} disabled fullscreen`, false);
         tileClient(client);
     }
 }
 
 export function clientMinimized(client: KWin.AbstractClient): void {
     if (!client.wasTiled) return;
-    printDebug(client.resourceClass + " was minimized", false);
+    printDebug(`${client.resourceClass} was minimized`, false);
     untileClient(client);
     client.wasTiled = true;
 }
 
 export function clientUnminimized(client: KWin.AbstractClient): void {
     if (!client.wasTiled) return;
-    printDebug(client.resourceClass + " was unminimized", false);
+    printDebug(`${client.resourceClass} was unminimized`, false);
     tileClient(client);
 }
 
@@ -284,7 +284,7 @@ export function clientMaximized(client: KWin.AbstractClient, mode: KWin.Maximize
         client.wasTiled = true;
         return;
     }
-    printDebug("Maximize mode on " + client.resourceClass + " was changed to " + mode, false);
+    printDebug(`Maximize mode on ${client.resourceClass} was changed to ${mode}`, false);
     switch (mode) {
         case 0: tileClient(client); break;
         default: untileClient(client);

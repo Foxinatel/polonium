@@ -25,10 +25,10 @@ export function retileWindow(): void {
     const client = workspace.activeClient;
     if (client == null) return;
     if (client.tile != null) {
-        printDebug("Untiling client " + client.resourceClass, false);
+        printDebug(`Untiling client ${client.resourceClass}`, false);
         untileClient(client);
     } else {
-        printDebug("Retiling client " + client.resourceClass, false);
+        printDebug(`Retiling client ${client.resourceClass}`, false);
         tileClient(client);
     }
 }
@@ -131,7 +131,7 @@ export function focus(this: any, direction: Direction): void {
     if (tile == null) return;
     const newClient = engine.clientOfTile(tile);
     if (newClient == null) return;
-    printDebug("Focusing " + newClient.resourceClass + " from " + client.resourceClass, false);
+    printDebug(`Focusing ${newClient.resourceClass} from ${client.resourceClass}`, false);
     workspace.activeClient = newClient;
 }
 
@@ -140,7 +140,7 @@ export function swap(this: any, direction: Direction): void {
     if (client == null || client.tile == null) return;
     const tile = tileInDirection(client, direction);
     if (tile == null) return;
-    printDebug("Swapping windows with " + client.resourceClass, false);
+    printDebug(`Swapping windows with ${client.resourceClass}`, false);
     engine.swapTiles(client.tile, tile);
     rebuildLayout();
 }
@@ -156,7 +156,7 @@ export function insert(this: any, direction: Direction): void {
     if (newTile == null) {
         newTile = workspace.tilingForScreen(client.screen).rootTile;
     }
-    printDebug("Inserting " + client.resourceClass + " in tile " + newTile, false);
+    printDebug(`Inserting ${client.resourceClass} in tile ${newTile}`, false);
     const oldGeometry = copy(client.frameGeometry);
     tileClient(client, newTile, directionToEngineDirection(invertDirection(direction)));
     // if inserting the client into a new tile gives it the same geometry, then just swap the tiles
