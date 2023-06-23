@@ -144,7 +144,8 @@ export class TilingEngine implements Engine.TilingEngine {
     }
 
     clientOfTile(tile: KWin.Tile): KWin.AbstractClient | null {
-        return this.tileMap.inverse.get(tile)?.windows[0] ?? null;
+        const _tile = this.tileMap.inverse.get(tile);
+        return _tile === undefined ? null : _tile.windows[0];
     }
 
     swapTiles(tileA: KWin.Tile, tileB: KWin.Tile): boolean {
