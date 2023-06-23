@@ -1,27 +1,27 @@
 import copy from "fast-copy";
 
 import { EngineManager, Desktop } from "./engine/engine";
-import { Direction } from "./engine/common";
+import { type Direction } from "./engine/common";
 // to build with a different engine, change this to a different file
 import { Borders, config, printDebug, doTileClient, GeometryTools } from "./util";
 import { workspace } from "./index";
 
 // change this to set the engine, may have a feature to edit this in real time in the future
-export const engine: EngineManager = new EngineManager;
+export const engine: EngineManager = new EngineManager();
 
 // boolean to stop geometrychange from interfering
 let buildingLayout: boolean = false;
-export function rebuildLayout(this: any, isRepeat = false) {
+export function rebuildLayout(this: any, isRepeat = false): void {
     buildingLayout = true;
     let repeatRebuild = false;
-    let desktops = new Array<Desktop>();
+    const desktops = new Array<Desktop>();
     for (let i = 0; i < workspace.numScreens; i += 1) {
-        let desktop = new Desktop;
+        const desktop = new Desktop();
         desktop.screen = i;
         desktops.push(desktop);
     }
     for (const desktop of desktops) {
-        let tileManager = workspace.tilingForScreen(desktop.screen);
+        const tileManager = workspace.tilingForScreen(desktop.screen);
         if (tileManager == undefined) {
             printDebug("No root tile found for desktop " + desktop, true);
             return;
@@ -69,7 +69,7 @@ export function rebuildLayout(this: any, isRepeat = false) {
                 client.desktopChanged.connect(clientDesktopChange.bind(this, client));
                 client.activitiesChanged.connect(clientDesktopChange);
                 client.screenChanged.connect(clientDesktopChange.bind(this, client));
-                //client.quickTileModeChanged.connect(clientQuickTiled.bind(this, client));
+                // client.quickTileModeChanged.connect(clientQuickTiled.bind(this, client));
                 client.frameGeometryChanged.connect(clientGeometryChange);
                 client.clientMaximizedStateChanged.connect(clientMaximized);
                 client.hasBeenTiled = true;
@@ -80,7 +80,7 @@ export function rebuildLayout(this: any, isRepeat = false) {
 
     // workaround for setMaximize(false,false) breaking the layout on first run
     if (!isRepeat && repeatRebuild) {
-        let timer = new QTimer();
+        const timer = new QTimer();
         timer.singleShot = true;
         timer.timeout.connect(rebuildLayout.bind(this, true));
         timer.start(config.timerDelay);
@@ -106,11 +106,11 @@ export function currentDesktopChange(): void {
     rebuildLayout();
 }
 
-export function clientDesktopChange(this: any, client: KWin.AbstractClient) {
+export function clientDesktopChange(this: any, client: KWin.AbstractClient): void {
     if (client.oldScreen == undefined || client.oldActivities == undefined || client.oldDesktop == undefined || !client.wasTiled) {
         client.oldDesktop = client.desktop;
         client.oldScreen = client.screen;
-        client.oldActivities = new Array;
+        client.oldActivities = [];
         for (const activity of client.activities) client.oldActivities.push(activity);
         return;
     }
@@ -119,10 +119,10 @@ export function clientDesktopChange(this: any, client: KWin.AbstractClient) {
     const activities = copy(client.oldActivities);
     client.oldDesktop = client.desktop;
     client.oldScreen = client.screen;
-    client.oldActivities = new Array;
+    client.oldActivities = [];
     for (const activity of client.activities) client.oldActivities.push(activity);
     printDebug("Desktop, screen, or activity changed on " + client.resourceClass, false);
-    let oldDesktops: Array<Desktop> = new Array;
+    const oldDesktops = new Array<Desktop>();
     if (vdesktop == -1) {
         for (let i = 0; i < workspace.desktops; i += 1) {
             for (const activity of activities) {
@@ -144,8 +144,8 @@ export function clientDesktopChange(this: any, client: KWin.AbstractClient) {
 export function tileClient(this: any, client: KWin.AbstractClient, tile?: KWin.Tile, direction?: Direction): void {
     // if a tile is specified, make sure to tile normally on other desktops where the tile doesnt exist
     if (tile != undefined) {
-        let currentDesktop = new Desktop;
-        let desktops: Array<Desktop> = new Array;
+        const currentDesktop = new Desktop();
+        const desktops = new Array<Desktop>();
         if (client.desktop == -1) {
             for (let i = 0; i < workspace.desktops; i += 1) {
                 for (const activity of client.activities) {
@@ -194,7 +194,7 @@ export function clientGeometryChange(this: any, client: KWin.AbstractClient, _ol
         return;
     }
     // only allow this function to handle movements when the client is visible
-    let desktop = new Desktop;
+    const desktop = new Desktop();
     if (client.screen != desktop.screen || !client.activities.includes(desktop.activity) || !(client.desktop == desktop.desktop || client.desktop == -1)) return;
     // if removed from tile
     if (client.wasTiled && client.tile == null) {
@@ -227,15 +227,15 @@ export function clientQuickTiled(this: any, client: KWin.AbstractClient): void {
 export function addClient(client: KWin.AbstractClient): void {
     client.oldDesktop = client.desktop;
     client.oldScreen = client.screen;
-    client.oldActivities = new Array;
+    client.oldActivities = [];
     client.maximized = 0;
     client.isSingleTile = false;
     for (const activity of client.activities) client.oldActivities.push(activity);
-    
+
     if (config.borders == Borders.NoBorderAll || config.borders == Borders.BorderSelected) {
         client.noBorder = true;
     }
-    
+
     if (doTileClient(client)) {
         printDebug("Adding and tiling " + client.resourceClass, false);
         tileClient(client);
@@ -274,7 +274,7 @@ export function clientUnminimized(client: KWin.AbstractClient): void {
     tileClient(client);
 }
 
-export function clientMaximized(client: KWin.AbstractClient, mode: KWin.MaximizeMode) {
+export function clientMaximized(client: KWin.AbstractClient, mode: KWin.MaximizeMode): void {
     client.maximized = mode;
     if (!client.wasTiled) return;
     if (client.isSingleTile && mode == 0) {
@@ -286,14 +286,14 @@ export function clientMaximized(client: KWin.AbstractClient, mode: KWin.Maximize
     }
     printDebug("Maximize mode on " + client.resourceClass + " was changed to " + mode, false);
     switch (mode) {
-        case 0: tileClient(client);
+        case 0: tileClient(client); break;
         default: untileClient(client);
     }
     client.wasTiled = true;
 }
 
 // for borders
-export function clientActivated(client: KWin.AbstractClient) {
+export function clientActivated(client: KWin.AbstractClient): void {
     if (workspace.tmpLastActiveClient != null) {
         if (config.borders == Borders.BorderSelected) {
             workspace.tmpLastActiveClient.noBorder = true;

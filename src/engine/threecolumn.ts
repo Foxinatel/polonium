@@ -2,7 +2,7 @@
 
 import { BiMap } from "mnemonist";
 import { printDebug } from "../util";
-import * as Engine from "./common";
+import type * as Engine from "./common";
 
 class Container {
     client: KWin.AbstractClient;
@@ -57,13 +57,13 @@ export class TilingEngine implements Engine.TilingEngine {
             let splitTile = leftTile;
             const left = this.columns[0];
             for (let i = 0; i < left.length; i += 1) {
-                let container = left[i];
+                const container = left[i];
                 // set the size if not the last one
                 if (i != left.length - 1) {
                     splitTile.split(2);
-                    leftTile.tiles[i].relativeGeometry.height = 1/left.length;
+                    leftTile.tiles[i].relativeGeometry.height = 1 / left.length;
                     this.nodeMap.set(container, leftTile.tiles[i]);
-                    splitTile = leftTile.tiles[i+1];
+                    splitTile = leftTile.tiles[i + 1];
                 } else {
                     this.nodeMap.set(container, splitTile);
                 }
@@ -73,13 +73,13 @@ export class TilingEngine implements Engine.TilingEngine {
             let splitTile = rightTile;
             const right = this.columns[2];
             for (let i = 0; i < right.length; i += 1) {
-                let container = right[i];
+                const container = right[i];
                 // set the size if not the last one
                 if (i != right.length - 1) {
                     splitTile.split(2);
-                    rightTile.tiles[i].relativeGeometry.height = 1/right.length;
+                    rightTile.tiles[i].relativeGeometry.height = 1 / right.length;
                     this.nodeMap.set(container, rightTile.tiles[i]);
-                    splitTile = rightTile.tiles[i+1];
+                    splitTile = rightTile.tiles[i + 1];
                 } else {
                     this.nodeMap.set(container, splitTile);
                 }
@@ -89,13 +89,13 @@ export class TilingEngine implements Engine.TilingEngine {
             let splitTile = centerTile;
             const center = this.columns[1];
             for (let i = 0; i < center.length; i += 1) {
-                let container = center[i];
+                const container = center[i];
                 // set the size if not the last one
                 if (i != center.length - 1) {
                     splitTile.split(2);
-                    centerTile.tiles[i].relativeGeometry.height = 1/center.length;
+                    centerTile.tiles[i].relativeGeometry.height = 1 / center.length;
                     this.nodeMap.set(container, centerTile.tiles[i]);
-                    splitTile = centerTile.tiles[i+1];
+                    splitTile = centerTile.tiles[i + 1];
                 } else {
                     this.nodeMap.set(container, splitTile);
                 }
@@ -103,7 +103,7 @@ export class TilingEngine implements Engine.TilingEngine {
         }
         return true;
     }
-    
+
     updateTiles(rootTile: KWin.RootTile): boolean {
         if (this.columns[0].length == 0 && this.columns[2].length != 0) {
             this.rightSize = rootTile.tiles[1].relativeGeometry.width;
@@ -115,7 +115,7 @@ export class TilingEngine implements Engine.TilingEngine {
         }
         return true;
     }
-    
+
     resizeTile(tile: KWin.Tile, direction: Engine.Direction, amount: number): boolean {
         // only resize left/right
         if (direction.primary) return false;
@@ -160,7 +160,7 @@ export class TilingEngine implements Engine.TilingEngine {
     }
 
     placeClients(): Array<[KWin.AbstractClient, KWin.Tile]> {
-        let ret: Array<[KWin.AbstractClient, KWin.Tile]> = new Array;
+        const ret = new Array<[KWin.AbstractClient, KWin.Tile]>();
         for (const column of this.columns) {
             for (const container of column) {
                 const tile = this.nodeMap.get(container);
@@ -193,7 +193,7 @@ export class TilingEngine implements Engine.TilingEngine {
             printDebug("No container found for tile", true);
             return false;
         }
-        let array: Array<Container> | undefined;
+        let array: Container[] | undefined;
         for (const column of this.columns) {
             if (column.includes(container)) {
                 array = column;
@@ -259,14 +259,14 @@ export class TilingEngine implements Engine.TilingEngine {
 
     removeClient(client: KWin.AbstractClient): boolean {
         for (let i = 0; i < this.columns.length; i += 1) {
-            let column = this.columns[i];
+            const column = this.columns[i];
             for (let j = 0; j < column.length; j += 1) {
                 if (column[j].client == client) {
                     column.splice(j, 1);
                     // if center column and other windows exist on other columns move one in from the side with the most
                     if (this.columns[1].length == 0) {
                         // get the column with the least windows
-                        let columnToRemove = (this.columns[0].length > this.columns[2].length) ? this.columns[0] : this.columns[2];
+                        const columnToRemove = (this.columns[0].length > this.columns[2].length) ? this.columns[0] : this.columns[2];
                         // if no more windows, return
                         if (columnToRemove.length == 0) {
                             return true;

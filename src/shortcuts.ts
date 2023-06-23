@@ -21,8 +21,8 @@ function invertDirection(direction: Direction): Direction {
     }
 }
 
-export function retileWindow() {
-    let client = workspace.activeClient;
+export function retileWindow(): void {
+    const client = workspace.activeClient;
     if (client == null) return;
     if (client.tile != null) {
         printDebug("Untiling client " + client.resourceClass, false);
@@ -37,13 +37,13 @@ export function retileWindow() {
 function tileAbove(client: KWin.AbstractClient): KWin.Tile | null {
     // only tiled clients are supported with keybinds
     if (client.tile == null) return null;
-    let geometry = client.frameGeometry;
+    const geometry = client.frameGeometry;
     // qt uses top left corner as 0,0
     // 1 unit offsets so it lands inside of another tile
-    let coordOffset = 1 + client.tile.padding;
-    let x = geometry.x + 1;
-    let y = geometry.y - coordOffset;
-    let tile: KWin.Tile | null = workspace.tilingForScreen(client.screen).bestTileForPosition(x, y);
+    const coordOffset = 1 + client.tile.padding;
+    const x = geometry.x + 1;
+    const y = geometry.y - coordOffset;
+    const tile: KWin.Tile | null = workspace.tilingForScreen(client.screen).bestTileForPosition(x, y);
     // make sure the window does not include the client
     if (tile == null || client.tile == tile) {
         return null;
@@ -53,16 +53,16 @@ function tileAbove(client: KWin.AbstractClient): KWin.Tile | null {
 }
 
 // tile below
-function tileBelow(client: KWin.AbstractClient) {
+function tileBelow(client: KWin.AbstractClient): KWin.Tile | null {
     // only tiled clients are supported with keybinds
     if (client.tile == null) return null;
-    let geometry = client.frameGeometry;
+    const geometry = client.frameGeometry;
     // qt uses top left corner as 0,0
     // 1 unit offsets so it lands inside of another tile
-    let coordOffset = 1 + geometry.height + client.tile.padding;
-    let x = geometry.x + 1;
-    let y = geometry.y + coordOffset;
-    let tile: KWin.Tile | null = workspace.tilingForScreen(client.screen).bestTileForPosition(x, y);
+    const coordOffset = 1 + geometry.height + client.tile.padding;
+    const x = geometry.x + 1;
+    const y = geometry.y + coordOffset;
+    const tile: KWin.Tile | null = workspace.tilingForScreen(client.screen).bestTileForPosition(x, y);
     // make sure the window does not include the client
     if (tile == null || client.tile == tile) {
         return null;
@@ -72,16 +72,16 @@ function tileBelow(client: KWin.AbstractClient) {
 }
 
 // tile left
-function tileLeft(client: KWin.AbstractClient) {
+function tileLeft(client: KWin.AbstractClient): KWin.Tile | null {
     // only tiled clients are supported with keybinds
     if (client.tile == null) return null;
-    let geometry = client.frameGeometry;
+    const geometry = client.frameGeometry;
     // qt uses top left corner as 0,0
     // 1 unit offsets so it lands inside of another tile
-    let coordOffset = 1 + client.tile.padding;
-    let x = geometry.x - coordOffset;
-    let y = geometry.y + 1;
-    let tile: KWin.Tile | null = workspace.tilingForScreen(client.screen).bestTileForPosition(x, y);
+    const coordOffset = 1 + client.tile.padding;
+    const x = geometry.x - coordOffset;
+    const y = geometry.y + 1;
+    const tile: KWin.Tile | null = workspace.tilingForScreen(client.screen).bestTileForPosition(x, y);
     // make sure the window does not include the client
     if (tile == null || client.tile == tile) {
         return null;
@@ -91,16 +91,16 @@ function tileLeft(client: KWin.AbstractClient) {
 }
 
 // tile right
-function tileRight(client: KWin.AbstractClient) {
+function tileRight(client: KWin.AbstractClient): KWin.Tile | null {
     // only tiled clients are supported with keybinds
     if (client.tile == null) return null;
-    let geometry = client.frameGeometry;
+    const geometry = client.frameGeometry;
     // qt uses top left corner as 0,0
     // 1 unit offsets so it lands inside of another tile
-    let coordOffset = 1 + geometry.width + client.tile.padding;
-    let x = geometry.x + coordOffset;
-    let y = geometry.y + 1;
-    let tile: KWin.Tile | null = workspace.tilingForScreen(client.screen).bestTileForPosition(x, y);
+    const coordOffset = 1 + geometry.width + client.tile.padding;
+    const x = geometry.x + coordOffset;
+    const y = geometry.y + 1;
+    const tile: KWin.Tile | null = workspace.tilingForScreen(client.screen).bestTileForPosition(x, y);
     // make sure the window does not include the client
     if (tile == null || client.tile == tile) {
         return null;
@@ -129,13 +129,13 @@ export function focus(this: any, direction: Direction): void {
     if (client == null || client.tile == null) return;
     const tile = tileInDirection(client, direction);
     if (tile == null) return;
-    let newClient = engine.clientOfTile(tile);
+    const newClient = engine.clientOfTile(tile);
     if (newClient == null) return;
     printDebug("Focusing " + newClient.resourceClass + " from " + client.resourceClass, false);
     workspace.activeClient = newClient;
 }
 
-export function swap(this: any, direction: Direction) {
+export function swap(this: any, direction: Direction): void {
     const client = workspace.activeClient;
     if (client == null || client.tile == null) return;
     const tile = tileInDirection(client, direction);
@@ -145,7 +145,7 @@ export function swap(this: any, direction: Direction) {
     rebuildLayout();
 }
 
-export function insert(this: any, direction: Direction) {
+export function insert(this: any, direction: Direction): void {
     const client = workspace.activeClient;
     if (client == null || client.tile == null) return;
     const tile = tileInDirection(client, direction);
@@ -165,8 +165,8 @@ export function insert(this: any, direction: Direction) {
     }
 }
 
-export function cycleEngine() {
-    const desktop = new Desktop;
+export function cycleEngine(): void {
+    const desktop = new Desktop();
     const clients = engine.placeClients(desktop).map(x => x[0]);
     for (const client of clients) {
         engine.removeClient(client, desktop);

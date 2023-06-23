@@ -16,12 +16,11 @@ export enum BTreeInsertionPoint {
     Active,
 }
 
-
 class Config {
     debug: boolean = kwin.readConfig("Debug", false);
     useProcessWhitelist: boolean = kwin.readConfig("UseProcessWhitelist", false);
-    filterProcessName: Array<string> = kwin.readConfig("FilterProcessName", "krunner, yakuake, kded, polkit").split(',').map((x: string) => x.trim());
-    filterClientCaption: Array<string> = kwin.readConfig("FilterClientCaption", "").split(',').map((x: string) => x.trim());
+    filterProcessName: string[] = kwin.readConfig("FilterProcessName", "krunner, yakuake, kded, polkit").split(",").map((x: string) => x.trim());
+    filterClientCaption: string[] = kwin.readConfig("FilterClientCaption", "").split(",").map((x: string) => x.trim());
     tilePopups: boolean = kwin.readConfig("TilePopups", false);
     borders: Borders = kwin.readConfig("Borders", Borders.NoBorderTiled);
     btreeInsertionPoint: BTreeInsertionPoint = kwin.readConfig("BTreeInsertionPoint", BTreeInsertionPoint.Left);
@@ -37,10 +36,10 @@ export function createConfig(): void {
     config = new Config();
 }
 
-let filterProcessCache: Set<string> = new Set;
-let filterCaptionCache: Set<string> = new Set;
+const filterProcessCache = new Set<string>();
+const filterCaptionCache = new Set<string>();
 
-export function printDebug(str: string, isError: boolean) {
+export function printDebug(str: string, isError: boolean): void {
     if (isError) {
         print("Polonium ERR: " + str);
     } else if (config.debug) {
@@ -71,7 +70,7 @@ export function doTileClient(client: KWin.AbstractClient): boolean {
     for (const i of config.filterClientCaption) {
         if (i !== "" && cap.includes(i)) {
             filterProcessCache.add(cap);
-            return false
+            return false;
         }
     }
 
@@ -86,7 +85,7 @@ export function doTileClient(client: KWin.AbstractClient): boolean {
             return config.useProcessWhitelist;
         }
     }
-	
+
     return !config.useProcessWhitelist;
 }
 
@@ -136,7 +135,7 @@ export namespace GeometryTools {
             }
         }
     }
-    
+
     export function isPointInRect(rect: Qt.QRect, point: Qt.QPoint): boolean {
         if (point.x < rect.x) return false;
         if (point.y < rect.y) return false;

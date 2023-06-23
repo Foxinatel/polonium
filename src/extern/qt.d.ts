@@ -2,14 +2,14 @@
 
 declare namespace Qt {
     interface QRect {
-        x: number;
-        y: number;
-        width: number;
-        height: number;
+        x: number
+        y: number
+        width: number
+        height: number
     }
     interface QPoint {
-        x: number;
-        y: number;
+        x: number
+        y: number
     }
     class QByteArray {}
 
@@ -23,11 +23,11 @@ declare namespace Qt {
         /** Very coarse timers only keep full second accuracy */
         VeryCoarseTimer = 2
     }
-    
+
 }
 
 // more complex than this, cant be iterated over
-type QList<T> = Array<T>;
+type QList<T> = T[];
 
 // taken from https://github.com/RubixDev/kwin-types/blob/main/src/qt.d.ts
 /**
@@ -42,7 +42,7 @@ declare class QTimer {
      * The default value for this property is false.
      * @see {@link interval}
      */
-    singleShot: boolean
+    singleShot: boolean;
     /**
      * This property holds the timeout interval in milliseconds
      *
@@ -51,7 +51,7 @@ declare class QTimer {
      * have been processed.
      * @see {@link singleShot}
      */
-    interval: number
+    interval: number;
     /**
      * This property holds the remaining time in milliseconds
      *
@@ -61,19 +61,19 @@ declare class QTimer {
      * @since 5.0
      * @see {@link interval}
      */
-    readonly remainingTime: number
+    readonly remainingTime: number;
     /**
      * controls the accuracy of the timer
      *
      * The default value for this property is {@link TimerType.CoarseTimer}.
      * @see {@link TimerType}
      */
-    timerType: Qt.TimerType
+    timerType: Qt.TimerType;
     /**
      * This boolean property is true if the timer is running; otherwise false
      * @since 4.3
      */
-    readonly active: boolean
+    readonly active: boolean;
 
     /**
      * This signal is emitted when the timer times out.
@@ -81,7 +81,7 @@ declare class QTimer {
      * **Note:** This is a private signal. It can be used in signal connections but cannot be emitted by the user.
      * @see {@link QTimer.interval interval}, {@link QTimer.start start}, {@link QTimer.stop stop}
      */
-    readonly timeout: Signal<() => void>
+    readonly timeout: Signal<() => void>;
 
     /**
      * Starts or restarts the timer with the timeout specified in {@link interval}.
@@ -90,7 +90,7 @@ declare class QTimer {
      *
      * If {@link singleShot} is true, the timer will be activated only once.
      */
-    start(): void
+    start(): void;
     /**
      * Starts or restarts the timer with a timeout interval of {@link msec} milliseconds.
      *
@@ -98,10 +98,10 @@ declare class QTimer {
      *
      * If {@link singleShot} is true, the timer will be activated only once.
      */
-    start(msec: number): void
+    start(msec: number): void;
     /**
      * Stops the timer.
      * @see {@link start}
      */
-    stop(): void
+    stop(): void;
 }

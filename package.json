@@ -22,7 +22,13 @@
   },
   "homepage": "https://github.com/zeroxoneafour/polonium#readme",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.60.0",
     "esbuild": "^0.17.19",
+    "eslint": "^8.43.0",
+    "eslint-config-standard-with-typescript": "^35.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^15.7.0",
+    "eslint-plugin-promise": "^6.1.1",
     "fast-copy": "^3.0.1",
     "mnemonist": "^0.39.5",
     "typescript": "^5.1.3"

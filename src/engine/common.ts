@@ -12,6 +12,7 @@ export class Direction {
         this.right = right;
         this.primary = primary;
     }
+
     toString(): string {
         return "(" + this.above ? "above" : "below" + ", " + this.right ? "right" : "left" + ")";
     }
@@ -28,7 +29,7 @@ export interface TilingEngine {
      * @param desktop - The desktop it is on
      * @returns True if exited successfully, false otherwise
      */
-    buildLayout(rootTile: KWin.RootTile): boolean;
+    buildLayout(rootTile: KWin.RootTile): boolean
     /**
      * Updates the size of a tile inside of the engine that is a descendant of rootTile
      * @remarks
@@ -39,24 +40,24 @@ export interface TilingEngine {
      * @param rootTile - The modified root tile
      * @returns True if exited successfully, false otherwise
      */
-    updateTiles(rootTile: KWin.RootTile): boolean;
+    updateTiles(rootTile: KWin.RootTile): boolean
     /**
      * Resize a client tile by a certain number of pixels in a direction
      * @remarks
      * Will return false if not possible to resize in that direction or on error
-     * 
+     *
      * @param tile - The tile to resize
      * @param direction - The direction to resize in
      * @param amount - The amount to resize by, relative to screen size (number less than 1)
      */
-    resizeTile(tile: KWin.Tile, direction: Direction, amount: number): boolean;
+    resizeTile(tile: KWin.Tile, direction: Direction, amount: number): boolean
     /**
      * Places clients based on desktop
      *
      * @param desktop - The desktop it is on
      * @returns An array of tuples built as [client, its tile] for all registered clients
      */
-    placeClients(): Array<[KWin.AbstractClient, KWin.Tile | null]>;
+    placeClients(): Array<[KWin.AbstractClient, KWin.Tile | null]>
     /**
      * Register a client into the engine
      * @remarks
@@ -65,7 +66,7 @@ export interface TilingEngine {
      * @param client - The client to register
      * @returns True if exited successfully, false otherwise
      */
-    addClient(client: KWin.AbstractClient): boolean;
+    addClient(client: KWin.AbstractClient): boolean
     /**
      * Usually used with geometryChanged to detect if the client is put into a tile
      *
@@ -74,27 +75,27 @@ export interface TilingEngine {
      * @param direction (optional) - The direction in the tile to place the client (top, bottom, etc.)
      * @returns True if exited successfully, false otherwise
      */
-    putClientInTile(client: KWin.AbstractClient, tile: KWin.Tile, direction?: Direction): boolean;
+    putClientInTile(client: KWin.AbstractClient, tile: KWin.Tile, direction?: Direction): boolean
     /**
      * Gets the client of a tile
-     * 
+     *
      * @param tile - The tile to get the client for
      * @returns The client of the tile or null if it doesn't exist
      */
-    clientOfTile(tile: KWin.Tile): KWin.AbstractClient | null;
+    clientOfTile(tile: KWin.Tile): KWin.AbstractClient | null
     /**
      * Swap the clients in the given tiles, or "swap tiles" as it appears
-     * 
+     *
      * @param tileA - The first tile
      * @param tileB - The second tile
      * @returns True if exited successfully, false otherwise
      */
-    swapTiles(tileA: KWin.Tile, tileB: KWin.Tile): boolean;
+    swapTiles(tileA: KWin.Tile, tileB: KWin.Tile): boolean
     /**
      * Remove a client that has been registered
      *
      * @param client - The client to remove
      * @returns True if exited successfully, false otherwise
      */
-    removeClient(client: KWin.AbstractClient): boolean;
+    removeClient(client: KWin.AbstractClient): boolean
 }

@@ -3,7 +3,7 @@
 import { BiMap } from "mnemonist";
 import copy from "fast-copy";
 import { printDebug, config, BTreeInsertionPoint } from "../util";
-import * as Engine from "./common";
+import type * as Engine from "./common";
 import { workspace } from "../index";
 
 /*
@@ -23,12 +23,13 @@ class TreeNode {
     split(): void {
         // cannot already have children
         if (this.children != null) return;
-        this.children = [new TreeNode, new TreeNode]
+        this.children = [new TreeNode(), new TreeNode()];
         this.children[0].parent = this;
         this.children[0].sibling = this.children[1];
         this.children[1].parent = this;
         this.children[1].sibling = this.children[0];
     }
+
     // removes self
     remove(): void {
         // cannot have children or be root
@@ -40,7 +41,6 @@ class TreeNode {
                 // help the adoption
                 child.parent = this.parent;
             }
-
         } else { // otherwise just move windows over
             this.parent.client = this.sibling.client;
             this.parent.children = null;
@@ -66,16 +66,16 @@ class RootNode extends TreeNode {
 
 export class TilingEngine implements Engine.TilingEngine {
     // turn the desktop into a string first so its indexed by primitive instead of reference
-    rootNode: RootNode = new RootNode;
+    rootNode: RootNode = new RootNode();
     // changed when desktop is changed
-    nodeMap: BiMap<TreeNode, KWin.Tile> = new BiMap;
-    
+    nodeMap = new BiMap<TreeNode, KWin.Tile>();
+
     buildLayout(rootTile: KWin.RootTile): boolean {
         // set up
-        this.nodeMap = new BiMap;
+        this.nodeMap = new BiMap();
         // modify rootTile
-        let stack: Array<TreeNode> = [this.rootNode];
-        let stackNext: Array<TreeNode> = [];
+        let stack: TreeNode[] = [this.rootNode];
+        let stackNext: TreeNode[] = [];
         this.nodeMap.set(this.rootNode, rootTile);
         let i = 0;
         while (stack.length > 0) {
@@ -97,7 +97,7 @@ export class TilingEngine implements Engine.TilingEngine {
                     tile.tiles[0].oldRelativeGeometry = copy(tile.tiles[0].relativeGeometry);
                     this.nodeMap.set(node.children[0], tile.tiles[0]);
                     stackNext.push(node.children[0]);
-                    
+
                     // second child
                     if (i % 2 == 0) { // width
                         tile.tiles[1].relativeGeometry.width = tile.relativeGeometry.width * (1 - node.childRatio);
@@ -115,12 +115,12 @@ export class TilingEngine implements Engine.TilingEngine {
         }
         return true;
     }
-    
+
     // man would it be easy if i could just pass the tile in...
     updateTiles(rootTile: KWin.RootTile): boolean {
         // find the greatest tile that has been altered
-        let stack: Array<KWin.Tile> = [rootTile];
-        let stackNext: Array<KWin.Tile> = [];
+        let stack: KWin.Tile[] = [rootTile];
+        let stackNext: KWin.Tile[] = [];
         // the node that is the parent of the altered children
         let modifiedNode: TreeNode | null = null;
         findloop: while (stack.length > 0) {
@@ -154,7 +154,7 @@ export class TilingEngine implements Engine.TilingEngine {
         if (modifiedNode == null) {
             return true;
         }
-        let modifiedTile = this.nodeMap.get(modifiedNode)!;
+        const modifiedTile = this.nodeMap.get(modifiedNode)!;
         // check if horizontal or vertical size is modified in children
         // case where height is modified, meaning the tiles are stacked vertically
         const oldRatio = modifiedNode.childRatio;
@@ -172,7 +172,7 @@ export class TilingEngine implements Engine.TilingEngine {
         modifiedTile.tiles[1].oldRelativeGeometry = copy(modifiedTile.tiles[1].relativeGeometry);
         return true;
     }
-    
+
     resizeTile(tile: KWin.Tile, direction: Engine.Direction, amount: number): boolean {
         const node = this.nodeMap.inverse.get(tile);
         if (node == undefined) {
@@ -222,16 +222,16 @@ export class TilingEngine implements Engine.TilingEngine {
         };
         return true;
     }
-    
+
     placeClients(): Array<[KWin.AbstractClient, KWin.Tile]> {
-        let ret = new Array<[KWin.AbstractClient, KWin.Tile]>();
+        const ret = new Array<[KWin.AbstractClient, KWin.Tile]>();
         // i love copy and paste this is why i develop software
-        let stack: Array<TreeNode> = [this.rootNode];
-        let stackNext: Array<TreeNode> = [];
+        let stack: TreeNode[] = [this.rootNode];
+        let stackNext: TreeNode[] = [];
         while (stack.length > 0) {
             for (const node of stack) {
                 if (node.client != null) {
-                    let tile = this.nodeMap.get(node);
+                    const tile = this.nodeMap.get(node);
                     if (tile == undefined) {
                         printDebug("No tile found for node", true);
                         continue;
@@ -249,12 +249,12 @@ export class TilingEngine implements Engine.TilingEngine {
         }
         return ret;
     }
-    
+
     addClient(client: KWin.AbstractClient): boolean {
         // truly this is the peak of programming
-        let stack: Array<TreeNode> = [this.rootNode];
-        let stackNext: Array<TreeNode> = [];
-        const targetClient = workspace.previousActiveClient
+        let stack: TreeNode[] = [this.rootNode];
+        let stackNext: TreeNode[] = [];
+        const targetClient = workspace.previousActiveClient;
         let i = 0;
         stackloop: while (stack.length > 0) {
             for (const node of stack) {
@@ -334,7 +334,7 @@ export class TilingEngine implements Engine.TilingEngine {
         }
         return true;
     }
-    
+
     clientOfTile(tile: KWin.Tile): KWin.AbstractClient | null {
         const node = this.nodeMap.inverse.get(tile);
         if (node == undefined) {
@@ -343,7 +343,7 @@ export class TilingEngine implements Engine.TilingEngine {
         }
         return node.client;
     }
-    
+
     swapTiles(tileA: KWin.Tile, tileB: KWin.Tile): boolean {
         const nodeA = this.nodeMap.inverse.get(tileA);
         const nodeB = this.nodeMap.inverse.get(tileB);
@@ -355,17 +355,17 @@ export class TilingEngine implements Engine.TilingEngine {
             printDebug("No client in one of the nodes", true);
             return false;
         }
-        let tmpClient: KWin.AbstractClient = nodeA.client;
+        const tmpClient: KWin.AbstractClient = nodeA.client;
         nodeA.client = nodeB.client;
         nodeB.client = tmpClient;
         return true;
     }
-    
+
     // cant copy code because indexed by string not object
     removeClient(client: KWin.AbstractClient): boolean {
-        let stack: Array<TreeNode> = [this.rootNode];
-        let stackNext: Array<TreeNode> = [];
-        let deleteQueue: Array<TreeNode> = [];
+        let stack: TreeNode[] = [this.rootNode];
+        let stackNext: TreeNode[] = [];
+        const deleteQueue: TreeNode[] = [];
         while (stack.length > 0) {
             for (const node of stack) {
                 if (node.client == client) {

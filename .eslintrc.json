@@ -1,0 +1,35 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es2021": true
+    },
+    "extends": "standard-with-typescript",
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "project": ["tsconfig.json"]
+    },
+    "rules": {
+        "semi": "off",
+        "@typescript-eslint/semi": ["error", "always"],
+        "quotes": "off",
+        "@typescript-eslint/quotes": ["error", "double"],
+        "@typescript-eslint/indent": ["error", 4],
+        "space-before-function-paren": "off",
+        "@typescript-eslint/space-before-function-paren": ["error", "never"],
+        "@typescript-eslint/method-signature-style": ["error", "method"],
+
+        // These rules aren't auto-fixable as they may change program behavior
+        // They only exist temporarily to appease the linter, with the goal of
+        // being removed in a series of future commits
+        "eqeqeq": "off",
+        "no-labels": "off",
+        "@typescript-eslint/no-base-to-string": "off",
+        "@typescript-eslint/no-namespace": "off",
+        "@typescript-eslint/restrict-plus-operands": "off",
+        "@typescript-eslint/strict-boolean-expressions": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-extraneous-class": "off",
+        "@typescript-eslint/ban-types": "off"
+    }
+}

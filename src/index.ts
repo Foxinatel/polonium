@@ -16,7 +16,7 @@ export function init(this: any, api: CoreApi, qmlObjects: Qml.Main): void {
     kwin = api.kwin;
     print = api.print;
     showDialog = qmlObjects.dialog.show;
-    
+
     createConfig();
     workspace.clientAdded.connect(main.addClient);
     workspace.clientRemoved.connect(main.removeClient);
