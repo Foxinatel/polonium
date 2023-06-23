@@ -113,11 +113,11 @@ export class TilingEngine implements Engine.TilingEngine {
 
     placeClients(): Array<[KWin.AbstractClient, KWin.Tile | null]> {
         const ret = new Array<[KWin.AbstractClient, KWin.Tile | null]>();
-        for (const fakeTile of this.tileMap.keys()) {
+        this.tileMap.forEach((kwinTile, fakeTile) => {
             for (const client of fakeTile.windows) {
-                ret.push([client, this.tileMap.get(fakeTile)!]);
+                ret.push([client, kwinTile]);
             }
-        }
+        });
         for (const client of this.untiledClients) {
             ret.push([client, null]);
         }
@@ -144,16 +144,7 @@ export class TilingEngine implements Engine.TilingEngine {
     }
 
     clientOfTile(tile: KWin.Tile): KWin.AbstractClient | null {
-        if (this.tileMap.inverse.has(tile)) {
-            const client = this.tileMap.inverse.get(tile)!.windows[0];
-            if (client === undefined) {
-                return null;
-            } else {
-                return client;
-            }
-        } else {
-            return null;
-        }
+        return this.tileMap.inverse.get(tile)?.windows[0] ?? null;
     }
 
     swapTiles(tileA: KWin.Tile, tileB: KWin.Tile): boolean {
