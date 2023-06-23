@@ -22,27 +22,27 @@ export class TilingEngine implements Engine.TilingEngine {
         let rightTile: KWin.Tile | undefined;
         let centerTile: KWin.Tile | undefined;
         // there should always be at least one thing in the center
-        if (this.columns[1].length == 0) {
+        if (this.columns[1].length === 0) {
             return true;
         }
-        if (this.columns[0].length == 0 && this.columns[2].length == 0) {
+        if (this.columns[0].length === 0 && this.columns[2].length === 0) {
             // only center
             centerTile = rootTile;
-        } else if (this.columns[0].length == 0 && this.columns[2].length != 0) {
+        } else if (this.columns[0].length === 0 && this.columns[2].length !== 0) {
             // center and right
             rootTile.split(1);
             rootTile.tiles[1].relativeGeometry.width = this.rightSize;
             rootTile.tiles[0].relativeGeometry.width = 1 - this.rightSize;
             centerTile = rootTile.tiles[0];
             rightTile = rootTile.tiles[1];
-        } else if (this.columns[0].length != 0 && this.columns[2].length == 0) {
+        } else if (this.columns[0].length !== 0 && this.columns[2].length === 0) {
             // center and left
             rootTile.split(1);
             rootTile.tiles[0].relativeGeometry.width = this.leftSize;
             rootTile.tiles[1].relativeGeometry.width = 1 - this.leftSize;
             centerTile = rootTile.tiles[1];
             leftTile = rootTile.tiles[0];
-        } else if (this.columns[0].length != 0 && this.columns[2].length != 0) {
+        } else if (this.columns[0].length !== 0 && this.columns[2].length !== 0) {
             // all columns
             rootTile.split(1);
             rootTile.tiles[1].split(1);
@@ -53,13 +53,13 @@ export class TilingEngine implements Engine.TilingEngine {
             leftTile = rootTile.tiles[0];
             rightTile = rootTile.tiles[2];
         }
-        if (leftTile != undefined) {
+        if (leftTile !== undefined) {
             let splitTile = leftTile;
             const left = this.columns[0];
             for (let i = 0; i < left.length; i += 1) {
                 const container = left[i];
                 // set the size if not the last one
-                if (i != left.length - 1) {
+                if (i !== left.length - 1) {
                     splitTile.split(2);
                     leftTile.tiles[i].relativeGeometry.height = 1 / left.length;
                     this.nodeMap.set(container, leftTile.tiles[i]);
@@ -69,13 +69,13 @@ export class TilingEngine implements Engine.TilingEngine {
                 }
             }
         }
-        if (rightTile != undefined) {
+        if (rightTile !== undefined) {
             let splitTile = rightTile;
             const right = this.columns[2];
             for (let i = 0; i < right.length; i += 1) {
                 const container = right[i];
                 // set the size if not the last one
-                if (i != right.length - 1) {
+                if (i !== right.length - 1) {
                     splitTile.split(2);
                     rightTile.tiles[i].relativeGeometry.height = 1 / right.length;
                     this.nodeMap.set(container, rightTile.tiles[i]);
@@ -85,13 +85,13 @@ export class TilingEngine implements Engine.TilingEngine {
                 }
             }
         }
-        if (centerTile != undefined) {
+        if (centerTile !== undefined) {
             let splitTile = centerTile;
             const center = this.columns[1];
             for (let i = 0; i < center.length; i += 1) {
                 const container = center[i];
                 // set the size if not the last one
-                if (i != center.length - 1) {
+                if (i !== center.length - 1) {
                     splitTile.split(2);
                     centerTile.tiles[i].relativeGeometry.height = 1 / center.length;
                     this.nodeMap.set(container, centerTile.tiles[i]);
@@ -105,11 +105,11 @@ export class TilingEngine implements Engine.TilingEngine {
     }
 
     updateTiles(rootTile: KWin.RootTile): boolean {
-        if (this.columns[0].length == 0 && this.columns[2].length != 0) {
+        if (this.columns[0].length === 0 && this.columns[2].length !== 0) {
             this.rightSize = rootTile.tiles[1].relativeGeometry.width;
-        } else if (this.columns[0].length != 0 && this.columns[2].length == 0) {
+        } else if (this.columns[0].length !== 0 && this.columns[2].length === 0) {
             this.leftSize = rootTile.tiles[0].relativeGeometry.width;
-        } else if (this.columns[0].length != 0 && this.columns[2].length != 0) {
+        } else if (this.columns[0].length !== 0 && this.columns[2].length !== 0) {
             this.rightSize = rootTile.tiles[2].relativeGeometry.width;
             this.leftSize = rootTile.tiles[0].relativeGeometry.width;
         }
@@ -164,7 +164,7 @@ export class TilingEngine implements Engine.TilingEngine {
         for (const column of this.columns) {
             for (const container of column) {
                 const tile = this.nodeMap.get(container);
-                if (tile == undefined) {
+                if (tile === undefined) {
                     printDebug("No tile found for container", true);
                     return ret;
                 }
@@ -176,7 +176,7 @@ export class TilingEngine implements Engine.TilingEngine {
 
     addClient(client: KWin.AbstractClient): boolean {
         // center first, then right, then left
-        if (this.columns[1].length == 0) {
+        if (this.columns[1].length === 0) {
             this.columns[1].push(new Container(client));
         } else if (this.columns[2].length <= this.columns[0].length) {
             this.columns[2].push(new Container(client));
@@ -189,7 +189,7 @@ export class TilingEngine implements Engine.TilingEngine {
     putClientInTile(client: KWin.AbstractClient, tile: KWin.Tile, direction?: Engine.Direction): boolean {
         const container = this.nodeMap.inverse.get(tile);
         const newContainer = new Container(client);
-        if (container == undefined) {
+        if (container === undefined) {
             printDebug("No container found for tile", true);
             return false;
         }
@@ -200,18 +200,18 @@ export class TilingEngine implements Engine.TilingEngine {
                 break;
             }
         }
-        if (array == undefined) {
+        if (array === undefined) {
             printDebug("Container not registered", true);
             return false;
         }
         // special behavior for center if there are no windows present on the sides
-        if (array == this.columns[1]) {
-            if (direction == undefined) {
+        if (array === this.columns[1]) {
+            if (direction === undefined) {
                 array.splice(array.indexOf(container), 0, newContainer);
             } else {
-                if (direction.right && this.columns[2].length == 0) {
+                if (direction.right && this.columns[2].length === 0) {
                     this.columns[2].push(newContainer);
-                } else if (!direction.right && this.columns[0].length == 0) {
+                } else if (!direction.right && this.columns[0].length === 0) {
                     this.columns[0].push(newContainer);
                 } else {
                     if (direction.above) {
@@ -222,7 +222,7 @@ export class TilingEngine implements Engine.TilingEngine {
                 }
             }
         } else {
-            if (direction == undefined) {
+            if (direction === undefined) {
                 array.splice(array.indexOf(container), 0, newContainer);
             } else {
                 if (direction.above) {
@@ -250,7 +250,7 @@ export class TilingEngine implements Engine.TilingEngine {
 
     clientOfTile(tile: KWin.Tile): KWin.AbstractClient | null {
         const container = this.nodeMap.inverse.get(tile);
-        if (container == undefined) {
+        if (container === undefined) {
             printDebug("No container found for tile", true);
             return null;
         }
@@ -261,14 +261,14 @@ export class TilingEngine implements Engine.TilingEngine {
         for (let i = 0; i < this.columns.length; i += 1) {
             const column = this.columns[i];
             for (let j = 0; j < column.length; j += 1) {
-                if (column[j].client == client) {
+                if (column[j].client === client) {
                     column.splice(j, 1);
                     // if center column and other windows exist on other columns move one in from the side with the most
-                    if (this.columns[1].length == 0) {
+                    if (this.columns[1].length === 0) {
                         // get the column with the least windows
                         const columnToRemove = (this.columns[0].length > this.columns[2].length) ? this.columns[0] : this.columns[2];
                         // if no more windows, return
-                        if (columnToRemove.length == 0) {
+                        if (columnToRemove.length === 0) {
                             return true;
                         }
                         const container = columnToRemove[columnToRemove.length - 1];

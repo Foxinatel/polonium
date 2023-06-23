@@ -22,7 +22,6 @@
         // These rules aren't auto-fixable as they may change program behavior
         // They only exist temporarily to appease the linter, with the goal of
         // being removed in a series of future commits
-        "eqeqeq": "off",
         "no-labels": "off",
         "@typescript-eslint/no-base-to-string": "off",
         "@typescript-eslint/no-namespace": "off",

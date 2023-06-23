@@ -45,7 +45,7 @@ function tileAbove(client: KWin.AbstractClient): KWin.Tile | null {
     const y = geometry.y - coordOffset;
     const tile: KWin.Tile | null = workspace.tilingForScreen(client.screen).bestTileForPosition(x, y);
     // make sure the window does not include the client
-    if (tile == null || client.tile == tile) {
+    if (tile == null || client.tile === tile) {
         return null;
     } else {
         return tile;
@@ -64,7 +64,7 @@ function tileBelow(client: KWin.AbstractClient): KWin.Tile | null {
     const y = geometry.y + coordOffset;
     const tile: KWin.Tile | null = workspace.tilingForScreen(client.screen).bestTileForPosition(x, y);
     // make sure the window does not include the client
-    if (tile == null || client.tile == tile) {
+    if (tile == null || client.tile === tile) {
         return null;
     } else {
         return tile;
@@ -83,7 +83,7 @@ function tileLeft(client: KWin.AbstractClient): KWin.Tile | null {
     const y = geometry.y + 1;
     const tile: KWin.Tile | null = workspace.tilingForScreen(client.screen).bestTileForPosition(x, y);
     // make sure the window does not include the client
-    if (tile == null || client.tile == tile) {
+    if (tile == null || client.tile === tile) {
         return null;
     } else {
         return tile;
@@ -102,7 +102,7 @@ function tileRight(client: KWin.AbstractClient): KWin.Tile | null {
     const y = geometry.y + 1;
     const tile: KWin.Tile | null = workspace.tilingForScreen(client.screen).bestTileForPosition(x, y);
     // make sure the window does not include the client
-    if (tile == null || client.tile == tile) {
+    if (tile == null || client.tile === tile) {
         return null;
     } else {
         return tile;
@@ -160,7 +160,7 @@ export function insert(this: any, direction: Direction): void {
     const oldGeometry = copy(client.frameGeometry);
     tileClient(client, newTile, directionToEngineDirection(invertDirection(direction)));
     // if inserting the client into a new tile gives it the same geometry, then just swap the tiles
-    if (oldGeometry.height == client.frameGeometry.height && oldGeometry.width == client.frameGeometry.width && oldGeometry.x == client.frameGeometry.x && oldGeometry.y == client.frameGeometry.y) {
+    if (oldGeometry.height === client.frameGeometry.height && oldGeometry.width === client.frameGeometry.width && oldGeometry.x === client.frameGeometry.x && oldGeometry.y === client.frameGeometry.y) {
         swap(direction);
     }
 }

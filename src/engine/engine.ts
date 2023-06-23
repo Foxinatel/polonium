@@ -26,7 +26,7 @@ export class Desktop {
     }
 
     constructor(screen?: number, activity?: string, desktop?: number) {
-        if (screen == undefined || activity == undefined || desktop == undefined) {
+        if (screen === undefined || activity === undefined || desktop === undefined) {
             this.screen = workspace.activeScreen;
             this.activity = workspace.currentActivity;
             this.desktop = workspace.currentDesktop;
@@ -72,7 +72,7 @@ export class EngineManager {
 
     cycleEngine(desktop: Desktop): boolean {
         let engineType = this.engineTypes.get(desktop.toString());
-        if (engineType == undefined) {
+        if (engineType === undefined) {
             printDebug("No engine found for desktop " + desktop, true);
             return false;
         }
@@ -167,7 +167,7 @@ export class EngineManager {
     addClient(client: KWin.AbstractClient, optionalDesktop?: Desktop): boolean {
         const desktops = new Array<Desktop>();
         if (!optionalDesktop) {
-            if (client.desktop == -1) {
+            if (client.desktop === -1) {
                 for (let i = 0; i < workspace.desktops; i += 1) {
                     for (const activity of client.activities) {
                         const desktop = new Desktop(client.screen, activity, i);
@@ -199,7 +199,7 @@ export class EngineManager {
 
     updateClientDesktop(client: KWin.AbstractClient, oldDesktops: Desktop[]): boolean {
         const newDesktops = new Array<Desktop>();
-        if (client.desktop == -1) {
+        if (client.desktop === -1) {
             for (let i = 0; i < workspace.desktops; i += 1) {
                 for (const activity of client.activities) {
                     const desktop = new Desktop(client.screen, activity, i);
@@ -268,7 +268,7 @@ export class EngineManager {
     removeClient(client: KWin.AbstractClient, optionalDesktop?: Desktop): boolean {
         const desktops = new Array<Desktop>();
         if (!optionalDesktop) {
-            if (client.desktop == -1) {
+            if (client.desktop === -1) {
                 for (let i = 0; i < workspace.desktops; i += 1) {
                     for (const activity of client.activities) {
                         const desktop = new Desktop(client.screen, activity, i);

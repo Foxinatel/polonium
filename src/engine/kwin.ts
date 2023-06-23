@@ -47,10 +47,10 @@ export class TilingEngine implements Engine.TilingEngine {
         this.tileMap.set(this.fakeRootTile, rootTile);
         let stack: Tile[] = [this.fakeRootTile];
         let stackNext = new Array<Tile>();
-        while (stack.length != 0) {
+        while (stack.length !== 0) {
             for (const fakeTile of stack) {
                 const realTile = this.tileMap.get(fakeTile);
-                if (realTile == undefined) {
+                if (realTile === undefined) {
                     printDebug("Could not find tile", true);
                     return false;
                 }
@@ -87,7 +87,7 @@ export class TilingEngine implements Engine.TilingEngine {
         while (stack.length > 0) {
             for (const realTile of stack) {
                 const fakeTile = this.tileMap.inverse.get(realTile);
-                if (fakeTile == undefined) {
+                if (fakeTile === undefined) {
                     printDebug("Could not find tile", true);
                     return false;
                 }
@@ -132,7 +132,7 @@ export class TilingEngine implements Engine.TilingEngine {
 
     putClientInTile(client: KWin.AbstractClient, tile: KWin.Tile): boolean {
         const fakeTile = this.tileMap.inverse.get(tile);
-        if (fakeTile == undefined) {
+        if (fakeTile === undefined) {
             printDebug("Could not find tile", true);
             return false;
         }
@@ -146,7 +146,7 @@ export class TilingEngine implements Engine.TilingEngine {
     clientOfTile(tile: KWin.Tile): KWin.AbstractClient | null {
         if (this.tileMap.inverse.has(tile)) {
             const client = this.tileMap.inverse.get(tile)!.windows[0];
-            if (client == undefined) {
+            if (client === undefined) {
                 return null;
             } else {
                 return client;
@@ -159,7 +159,7 @@ export class TilingEngine implements Engine.TilingEngine {
     swapTiles(tileA: KWin.Tile, tileB: KWin.Tile): boolean {
         const fakeTileA = this.tileMap.inverse.get(tileA);
         const fakeTileB = this.tileMap.inverse.get(tileB);
-        if (fakeTileA == undefined || fakeTileB == undefined) {
+        if (fakeTileA === undefined || fakeTileB === undefined) {
             printDebug("Could not find tiles", true);
             return false;
         }

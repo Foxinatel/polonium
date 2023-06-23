@@ -18,11 +18,11 @@ export class TilingEngine implements Engine.TilingEngine {
     middleSplit: number = 0.5;
 
     buildLayout(rootTile: KWin.RootTile): boolean {
-        if (this.right.length == 0 || this.left.length == 0) {
+        if (this.right.length === 0 || this.left.length === 0) {
             let previousTile: KWin.Tile = rootTile;
             const topTile = previousTile;
             let mainArray: Container[];
-            if (this.right.length == 0) {
+            if (this.right.length === 0) {
                 mainArray = this.left;
             } else {
                 mainArray = this.right;
@@ -30,7 +30,7 @@ export class TilingEngine implements Engine.TilingEngine {
             for (let i = 0; i < mainArray.length; i += 1) {
                 const container = mainArray[i];
                 // set the size if not the last one
-                if (i != mainArray.length - 1) {
+                if (i !== mainArray.length - 1) {
                     previousTile.split(2);
                     topTile.tiles[i].relativeGeometry.height = 1 / mainArray.length;
                     this.nodeMap.set(container, topTile.tiles[i]);
@@ -51,7 +51,7 @@ export class TilingEngine implements Engine.TilingEngine {
             for (let i = 0; i < this.left.length; i += 1) {
                 const container = this.left[i];
                 // set the size if not the last one
-                if (i != this.left.length - 1) {
+                if (i !== this.left.length - 1) {
                     leftTile.split(2);
                     topLeftTile.tiles[i].relativeGeometry.height = 1 / this.left.length;
                     this.nodeMap.set(container, topLeftTile.tiles[i]);
@@ -63,7 +63,7 @@ export class TilingEngine implements Engine.TilingEngine {
             for (let i = 0; i < this.right.length; i += 1) {
                 const container = this.right[i];
                 // set the size if not the last one
-                if (i != this.right.length - 1) {
+                if (i !== this.right.length - 1) {
                     rightTile.split(2);
                     topRightTile.tiles[i].relativeGeometry.height = 1 / this.right.length;
                     this.nodeMap.set(container, topRightTile.tiles[i]);
@@ -77,7 +77,7 @@ export class TilingEngine implements Engine.TilingEngine {
     }
 
     updateTiles(rootTile: KWin.RootTile): boolean {
-        if (this.left.length != 0 && this.right.length != 0) {
+        if (this.left.length !== 0 && this.right.length !== 0) {
             this.middleSplit = rootTile.tiles[0].relativeGeometry.width;
         }
         return true;
@@ -104,7 +104,7 @@ export class TilingEngine implements Engine.TilingEngine {
         const ret = new Array<[KWin.AbstractClient, KWin.Tile]>();
         for (const container of this.left) {
             const tile = this.nodeMap.get(container);
-            if (tile == undefined) {
+            if (tile === undefined) {
                 printDebug("No tile found for container", true);
                 return ret;
             }
@@ -112,7 +112,7 @@ export class TilingEngine implements Engine.TilingEngine {
         }
         for (const container of this.right) {
             const tile = this.nodeMap.get(container);
-            if (tile == undefined) {
+            if (tile === undefined) {
                 printDebug("No tile found for container", true);
                 return ret;
             }
@@ -122,7 +122,7 @@ export class TilingEngine implements Engine.TilingEngine {
     }
 
     addClient(client: KWin.AbstractClient): boolean {
-        if (this.left.length == 0) {
+        if (this.left.length === 0) {
             this.left.push(new Container(client));
         } else {
             this.right.push(new Container(client));
@@ -132,7 +132,7 @@ export class TilingEngine implements Engine.TilingEngine {
 
     putClientInTile(client: KWin.AbstractClient, tile: KWin.Tile, direction?: Engine.Direction): boolean {
         const container = this.nodeMap.inverse.get(tile);
-        if (container == undefined) {
+        if (container === undefined) {
             printDebug("No container found for tile", true);
             return false;
         }
@@ -140,10 +140,10 @@ export class TilingEngine implements Engine.TilingEngine {
         if (this.right.includes(container)) {
             const array = this.right;
             // put in left if there are no windows and the direction indicates left
-            if ((direction == undefined || !direction.right) && this.left.length == 0) {
+            if ((direction === undefined || !direction.right) && this.left.length === 0) {
                 this.left.push(newContainer);
             } else {
-                if (direction == undefined) {
+                if (direction === undefined) {
                     array.splice(array.indexOf(container), 0, newContainer);
                 } else {
                     if (direction.above) {
@@ -156,10 +156,10 @@ export class TilingEngine implements Engine.TilingEngine {
         } else {
             const array = this.left;
             // put in right if there are no windows and the direction indicates right
-            if ((direction == undefined || direction.right) && this.right.length == 0) {
+            if ((direction === undefined || direction.right) && this.right.length === 0) {
                 this.right.push(newContainer);
             } else {
-                if (direction == undefined) {
+                if (direction === undefined) {
                     array.splice(array.indexOf(container), 0, newContainer);
                 } else {
                     if (direction.above) {
@@ -188,7 +188,7 @@ export class TilingEngine implements Engine.TilingEngine {
 
     clientOfTile(tile: KWin.Tile): KWin.AbstractClient | null {
         const container = this.nodeMap.inverse.get(tile);
-        if (container == undefined) {
+        if (container === undefined) {
             printDebug("No container found for tile", true);
             return null;
         }
@@ -197,10 +197,10 @@ export class TilingEngine implements Engine.TilingEngine {
 
     removeClient(client: KWin.AbstractClient): boolean {
         for (let i = 0; i < this.left.length; i += 1) {
-            if (this.left[i].client == client) {
+            if (this.left[i].client === client) {
                 this.left.splice(i, 1);
                 // if no left, shift first on right to left
-                if (this.left.length == 0 && this.right.length != 0) {
+                if (this.left.length === 0 && this.right.length !== 0) {
                     const container = this.right[0];
                     this.left.push(container);
                     this.right.splice(0, 1);
@@ -209,10 +209,10 @@ export class TilingEngine implements Engine.TilingEngine {
             }
         }
         for (let i = 0; i < this.right.length; i += 1) {
-            if (this.right[i].client == client) {
+            if (this.right[i].client === client) {
                 this.right.splice(i, 1);
                 // if more than one left, move last one to right
-                if (this.right.length == 0 && this.left.length > 1) {
+                if (this.right.length === 0 && this.left.length > 1) {
                     const container = this.left[this.left.length - 1];
                     this.right.push(container);
                     this.left.splice(this.left.length - 1, 1);

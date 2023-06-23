@@ -89,7 +89,7 @@ export class TilingEngine implements Engine.TilingEngine {
                     // magic
                     tile.split((i % 2) + 1);
                     // first child
-                    if (i % 2 == 0) { // modify width
+                    if (i % 2 === 0) { // modify width
                         tile.tiles[0].relativeGeometry.width = tile.relativeGeometry.width * node.childRatio;
                     } else { // height
                         tile.tiles[0].relativeGeometry.height = tile.relativeGeometry.height * node.childRatio;
@@ -99,7 +99,7 @@ export class TilingEngine implements Engine.TilingEngine {
                     stackNext.push(node.children[0]);
 
                     // second child
-                    if (i % 2 == 0) { // width
+                    if (i % 2 === 0) { // width
                         tile.tiles[1].relativeGeometry.width = tile.relativeGeometry.width * (1 - node.childRatio);
                     } else { // height
                         tile.tiles[1].relativeGeometry.height = tile.relativeGeometry.height * (1 - node.childRatio);
@@ -125,10 +125,10 @@ export class TilingEngine implements Engine.TilingEngine {
         let modifiedNode: TreeNode | null = null;
         findloop: while (stack.length > 0) {
             for (const tile of stack) {
-                if (tile.oldRelativeGeometry != undefined) {
+                if (tile.oldRelativeGeometry !== undefined) {
                     const geometry = tile.relativeGeometry;
                     const oldGeometry = tile.oldRelativeGeometry;
-                    if (geometry.width != oldGeometry.width || geometry.height != oldGeometry.height) {
+                    if (geometry.width !== oldGeometry.width || geometry.height !== oldGeometry.height) {
                         const modifiedTile = tile.parent;
                         // should never happen
                         if (modifiedTile == null) {
@@ -136,7 +136,7 @@ export class TilingEngine implements Engine.TilingEngine {
                             return false;
                         }
                         const modifiedNodeTest = this.nodeMap.inverse.get(modifiedTile);
-                        if (modifiedNodeTest == undefined) {
+                        if (modifiedNodeTest === undefined) {
                             printDebug("No node found for modified tile", true);
                             return false;
                         }
@@ -158,7 +158,7 @@ export class TilingEngine implements Engine.TilingEngine {
         // check if horizontal or vertical size is modified in children
         // case where height is modified, meaning the tiles are stacked vertically
         const oldRatio = modifiedNode.childRatio;
-        if (modifiedTile.tiles[0].relativeGeometry.height != modifiedTile.tiles[0].oldRelativeGeometry!.height) {
+        if (modifiedTile.tiles[0].relativeGeometry.height !== modifiedTile.tiles[0].oldRelativeGeometry!.height) {
             modifiedNode.childRatio = modifiedTile.tiles[0].relativeGeometry.height / modifiedTile.relativeGeometry.height;
         } else {
             modifiedNode.childRatio = modifiedTile.tiles[0].relativeGeometry.width / modifiedTile.relativeGeometry.width;
@@ -175,7 +175,7 @@ export class TilingEngine implements Engine.TilingEngine {
 
     resizeTile(tile: KWin.Tile, direction: Engine.Direction, amount: number): boolean {
         const node = this.nodeMap.inverse.get(tile);
-        if (node == undefined) {
+        if (node === undefined) {
             printDebug("Node not found", true);
             return false;
         }
@@ -187,12 +187,12 @@ export class TilingEngine implements Engine.TilingEngine {
         // resize up/down
         if (direction.primary) {
             // if horizontal layout, find the next parent up (to get a vertical layout)
-            if (tile.parent.layoutDirection == 1) {
+            if (tile.parent.layoutDirection === 1) {
                 parent = parent.parent;
             }
         } else { // resize side to side
             // if vertical layout, find the next parent up (for a horizontal layout)
-            if (tile.parent.layoutDirection == 2) {
+            if (tile.parent.layoutDirection === 2) {
                 parent = parent.parent;
             }
         }
@@ -232,7 +232,7 @@ export class TilingEngine implements Engine.TilingEngine {
             for (const node of stack) {
                 if (node.client != null) {
                     const tile = this.nodeMap.get(node);
-                    if (tile == undefined) {
+                    if (tile === undefined) {
                         printDebug("No tile found for node", true);
                         continue;
                     }
@@ -260,7 +260,7 @@ export class TilingEngine implements Engine.TilingEngine {
             for (const node of stack) {
                 if (node.children == null) {
                     if (node.client != null) { // case for basically all non-root tiles
-                        if (config.btreeInsertionPoint == BTreeInsertionPoint.Active && targetClient && node.client != targetClient) {
+                        if (config.btreeInsertionPoint === BTreeInsertionPoint.Active && targetClient && node.client !== targetClient) {
                             continue;
                         }
                         node.split();
@@ -279,7 +279,7 @@ export class TilingEngine implements Engine.TilingEngine {
             }
             stack = stackNext;
             // invert insertion order every 2 iterations if option is enabled to put windows on right
-            if (config.btreeInsertionPoint == BTreeInsertionPoint.Right && i % 2 == 0) {
+            if (config.btreeInsertionPoint === BTreeInsertionPoint.Right && i % 2 === 0) {
                 stack.reverse();
             }
             stackNext = [];
@@ -291,7 +291,7 @@ export class TilingEngine implements Engine.TilingEngine {
     putClientInTile(client: KWin.AbstractClient, tile: KWin.Tile, direction?: Engine.Direction): boolean {
         // assumes the nodemap has been built correctly
         const node = this.nodeMap.inverse.get(tile);
-        if (node == undefined) {
+        if (node === undefined) {
             printDebug("No node found for tile", true);
             return false;
         }
@@ -299,7 +299,7 @@ export class TilingEngine implements Engine.TilingEngine {
             node.client = client;
         } else {
             node.split();
-            if (direction == undefined) {
+            if (direction === undefined) {
                 node.children![0].client = node.client;
                 node.children![1].client = client;
             } else {
@@ -312,7 +312,7 @@ export class TilingEngine implements Engine.TilingEngine {
                 }
                 // if i is odd, tiles are side to side (so any new tile is up to down)
                 // vice versa for even
-                if (i % 2 == 1) {
+                if (i % 2 === 1) {
                     if (direction.above) {
                         node.children![0].client = client;
                         node.children![1].client = node.client;
@@ -337,7 +337,7 @@ export class TilingEngine implements Engine.TilingEngine {
 
     clientOfTile(tile: KWin.Tile): KWin.AbstractClient | null {
         const node = this.nodeMap.inverse.get(tile);
-        if (node == undefined) {
+        if (node === undefined) {
             printDebug("No node found for tile", true);
             return null;
         }
@@ -347,7 +347,7 @@ export class TilingEngine implements Engine.TilingEngine {
     swapTiles(tileA: KWin.Tile, tileB: KWin.Tile): boolean {
         const nodeA = this.nodeMap.inverse.get(tileA);
         const nodeB = this.nodeMap.inverse.get(tileB);
-        if (nodeA == undefined || nodeB == undefined) {
+        if (nodeA === undefined || nodeB === undefined) {
             printDebug("No node found for tile", true);
             return false;
         }
@@ -368,7 +368,7 @@ export class TilingEngine implements Engine.TilingEngine {
         const deleteQueue: TreeNode[] = [];
         while (stack.length > 0) {
             for (const node of stack) {
-                if (node.client == client) {
+                if (node.client === client) {
                     deleteQueue.push(node);
                 }
                 if (node.children != null) {
