@@ -20,14 +20,15 @@ class TreeNode {
     // the ratio between the size of the children nodes relative to parent. >0.5 means first child is bigger, <0.5 means smaller
     childRatio: number = 0.5;
     // splits tile
-    split(): void {
+    split(): [TreeNode, TreeNode] {
         // cannot already have children
-        if (this.children != null) return;
+        if (this.children != null) return this.children;
         this.children = [new TreeNode(), new TreeNode()];
         this.children[0].parent = this;
         this.children[0].sibling = this.children[1];
         this.children[1].parent = this;
         this.children[1].sibling = this.children[0];
+        return this.children;
     }
 
     // removes self
@@ -154,11 +155,12 @@ export class TilingEngine implements Engine.TilingEngine {
         if (modifiedNode == null) {
             return true;
         }
-        const modifiedTile = this.nodeMap.get(modifiedNode)!;
+        const modifiedTile = this.nodeMap.get(modifiedNode);
+        if (modifiedTile == null) return false;
         // check if horizontal or vertical size is modified in children
         // case where height is modified, meaning the tiles are stacked vertically
         const oldRatio = modifiedNode.childRatio;
-        if (modifiedTile.tiles[0].relativeGeometry.height !== modifiedTile.tiles[0].oldRelativeGeometry!.height) {
+        if (modifiedTile.tiles[0].relativeGeometry.height !== modifiedTile.tiles[0].oldRelativeGeometry.height) {
             modifiedNode.childRatio = modifiedTile.tiles[0].relativeGeometry.height / modifiedTile.relativeGeometry.height;
         } else {
             modifiedNode.childRatio = modifiedTile.tiles[0].relativeGeometry.width / modifiedTile.relativeGeometry.width;
@@ -263,9 +265,9 @@ export class TilingEngine implements Engine.TilingEngine {
                         if (config.btreeInsertionPoint === BTreeInsertionPoint.Active && targetClient && node.client !== targetClient) {
                             continue;
                         }
-                        node.split();
-                        node.children![0].client = node.client;
-                        node.children![1].client = client;
+                        const children = node.split();
+                        children[0].client = node.client;
+                        children[1].client = client;
                         node.client = null;
                     } else { // just add the client
                         node.client = client;
@@ -298,10 +300,10 @@ export class TilingEngine implements Engine.TilingEngine {
         if (node.client == null) {
             node.client = client;
         } else {
-            node.split();
+            const children = node.split();
             if (direction === undefined) {
-                node.children![0].client = node.client;
-                node.children![1].client = client;
+                children[0].client = node.client;
+                children[1].client = client;
             } else {
                 let parent = node;
                 let i = 0;
@@ -314,19 +316,19 @@ export class TilingEngine implements Engine.TilingEngine {
                 // vice versa for even
                 if (i % 2 === 1) {
                     if (direction.above) {
-                        node.children![0].client = client;
-                        node.children![1].client = node.client;
+                        children[0].client = client;
+                        children[1].client = node.client;
                     } else {
-                        node.children![0].client = node.client;
-                        node.children![1].client = client;
+                        children[0].client = node.client;
+                        children[1].client = client;
                     }
                 } else {
                     if (!direction.right) {
-                        node.children![0].client = client;
-                        node.children![1].client = node.client;
+                        children[0].client = client;
+                        children[1].client = node.client;
                     } else {
-                        node.children![0].client = node.client;
-                        node.children![1].client = client;
+                        children[0].client = node.client;
+                        children[1].client = client;
                     }
                 }
             }

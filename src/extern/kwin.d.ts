@@ -55,7 +55,7 @@ declare namespace KWin {
         absoluteGeometry: Qt.QRect
         relativeGeometry: Qt.QRect
         layoutDirection: LayoutDirection
-        oldRelativeGeometry: Qt.QRect | undefined
+        oldRelativeGeometry: Qt.QRect
         // null for root tile
         parent: Tile | null
         padding: number

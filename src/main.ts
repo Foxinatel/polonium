@@ -92,7 +92,7 @@ export function currentDesktopChange(): void {
     const clientList = workspace.clientList();
     for (let i = 0; i < clientList.length; i += 1) {
         const client = clientList[i];
-        if (client.tile != null && client.screen === workspace.lastActiveScreen && client.activities.includes(workspace.lastActivity!) && client.desktop === workspace.lastDesktop) {
+        if (client.tile != null && client.screen === workspace.lastActiveScreen && workspace.lastActivity !== undefined && client.activities.includes(workspace.lastActivity) && client.desktop === workspace.lastDesktop) {
             const tile = client.tile;
             client.tile = null;
             client.frameGeometry = tile.absoluteGeometry;
